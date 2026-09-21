@@ -23,7 +23,8 @@ from .models import DIB, DIB_PROFILES, SpectralModel, StellarLine
 from .likelihood import WEIGHT_METHODS, log_likelihood
 from .priors import normal_prior, rv_constrained_center_prior, uniform_box
 from .profiles import C_KMS, gaussian_absorption, shift_wavelength, voigt_absorption
-from .quality import MILD, SEVERE, SUCCESS, classify_tau, n_effective
+from .quality import (MILD, SEVERE, SUCCESS, SEVERE_NEFF, SUCCESS_NEFF, classify,
+                      classify_tau, dib_autocorr_times, n_effective)
 from .sampler import MCMCResult, run_mcmc
 from .selection import aic, bic, chi2_lnL, delta_ic
 
@@ -33,7 +34,8 @@ __all__ = [
     'SpectralModel', 'StellarLine', 'DIB', 'DIB_PROFILES',
     'log_likelihood', 'WEIGHT_METHODS',
     'run_mcmc', 'MCMCResult',
-    'classify_tau', 'n_effective', 'SUCCESS', 'MILD', 'SEVERE',
+    'classify', 'classify_tau', 'dib_autocorr_times', 'n_effective',
+    'SUCCESS', 'MILD', 'SEVERE', 'SUCCESS_NEFF', 'SEVERE_NEFF',
     'aic', 'bic', 'delta_ic', 'chi2_lnL',
     'gaussian_absorption', 'voigt_absorption', 'shift_wavelength', 'C_KMS',
     'uniform_box', 'normal_prior', 'rv_constrained_center_prior',

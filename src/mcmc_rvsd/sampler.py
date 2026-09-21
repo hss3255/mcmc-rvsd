@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import emcee
 
-from .quality import classify_tau
+from .quality import classify
 from .selection import aic, best_sample_lnL, bic, chi2_lnL
 
 
@@ -127,6 +127,6 @@ def run_mcmc(model, wave, flux, flux_err, rvs, rv_errs, p0=None, snrs=None,
     k, n = ndim, flux.size
     return MCMCResult(param_names=model.param_names, pfit=pfit, perr=perr, p16=p16, p84=p84,
                       samples=samples, tau=np.asarray(tau), lnL=lnL, aic=aic(lnL_best, k),
-                      bic=bic(lnL_best, k, n), label=classify_tau(tau), nwalkers=nwalkers,
+                      bic=bic(lnL_best, k, n), label=classify(tau, production), nwalkers=nwalkers,
                       burnin=burnin, production=production, runtime=runtime,
                       extra=dict(lnL_best=float(lnL_best), p_best=np.asarray(p_best)))

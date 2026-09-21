@@ -80,17 +80,25 @@ with AIC/BIC::
 from mcmc_rvsd import aic, bic
 ```
 
-The autocorrelation time of the chains is translated into the labels used for the
-published catalogue:
+The chains are labelled from the **effective sample size of the DIB parameters**,
+`L / tau_DIB`, where `L` is the chain length (production steps) and `tau_DIB` collects the
+autocorrelation times of the three DIB parameters:
 
-| tau (steps) | label |
+| condition | label |
 |---|---|
-| <= 100 | `Success` |
-| <= 200 | `Mild Degeneracy` |
-| > 200 | `Severe Degeneracy` |
+| `max(L/tau_DIB) >= 50` | `Success` |
+| `min(L/tau_DIB) <= 25` | `Severe Degeneracy` |
+| otherwise | `Mild Degeneracy` |
 
-A large autocorrelation time means that the parameters are degenerate, which is the
-final safeguard for a measurement that cannot be modelled explicitly.
+`classify(tau, n_steps)` in `mcmc_rvsd.quality` implements exactly this rule. Both
+conditions act on the three DIB parameters jointly: `max` for Success (one well-sampled
+parameter is enough to accept the source) and `min` for Severe (one badly sampled
+parameter is enough to reject it). For the catalogue chain length `L = 5000` the rule is
+equivalent to `min(tau_DIB) <= 100` -> Success and `max(tau_DIB) >= 200` -> Severe, but
+the thresholds move with `L` - pass the chain length that produced the samples.
+
+A large autocorrelation time means that the parameters are degenerate, which is the final
+safeguard for a measurement that cannot be modelled explicitly.
 
 ## Repository layout
 

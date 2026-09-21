@@ -15,8 +15,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 
-from mcmc_rvsd import (DIB, SpectralModel, StellarLine, aic, bic, classify_tau,  # noqa: E402
-                       gaussian_absorption, run_mcmc, voigt_absorption)
+from mcmc_rvsd import (DIB, SpectralModel, StellarLine, aic, bic, classify,  # noqa: E402
+                       dib_autocorr_times, gaussian_absorption, n_effective, run_mcmc,
+                       voigt_absorption)
 from mcmc_rvsd.io import load_mock, load_result                                   # noqa: E402
 
 WAVE = np.arange(6611.5, 6617.0, 0.12)
@@ -94,9 +95,26 @@ def test_short_mcmc_recovers_the_mock():
 def test_selection_and_quality_helpers():
     assert aic(-100.0, 6) == 12 + 200
     assert bic(-100.0, 6, 1000) == pytest.approx(6 * np.log(1000) + 200)
-    assert classify_tau(50) == 'Success'
-    assert classify_tau(150) == 'Mild Degeneracy'
-    assert classify_tau(300) == 'Severe Degeneracy'
+
+    # the label rule of the paper is on L / tau_DIB: max(L/tau) >= 50 -> Success,
+    # min(L/tau) <= 25 -> Severe, otherwise Mild
+    tau_ok = [60., 61., 62., 62., 59., 68.]          # min(tau_DIB) = 59  -> 85 samples
+    tau_severe = [300., 206., 237., 221., 236., 135.]  # max(tau_DIB) = 236 -> 21 samples
+    tau_mild = [170., 160., 150., 156., 160., 156.]
+    assert classify(tau_ok, 5000) == 'Success'
+    assert classify(tau_mild, 5000) == 'Mild Degeneracy'
+    assert classify(tau_severe, 5000) == 'Severe Degeneracy'
+
+    # asymmetry: Success uses the *smallest* DIB tau, Severe the *largest*
+    assert classify([50., 50., 50., 30., 400., 40.], 5000) == 'Success'   # min -> 125 samples
+    assert classify([50., 50., 50., 150., 150., 150.], 5000) == 'Mild Degeneracy'
+
+    # the thresholds scale with the chain length
+    assert classify(tau_mild, 5000) == 'Mild Degeneracy'
+    assert classify(tau_mild, 20000) == 'Success'          # 20000/156 = 128 samples
+    assert classify(tau_ok, 1000) == 'Severe Degeneracy'   # 1000/62 = 16 samples <= 25
+    assert n_effective([100., 100., 100.], 5000)[0] == pytest.approx(50.0)
+    assert list(dib_autocorr_times(np.arange(7) + 1.)) == [5.0, 6.0, 7.0]
 
 
 def test_result_roundtrip(tmp_path):

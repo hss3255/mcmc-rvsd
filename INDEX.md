@@ -13,7 +13,7 @@ Handy when you need "where was that thing again?".
 | `priors.py` | Box prior, RV-constrained centre prior, Gaussian prior | `mock_data/mcmc.py` (`lnprior`, commented block) |
 | `sampler.py` | emcee driver, `MCMCResult` (summary / save / load), walker initialisation | `mock_data/mcmc.py` (`get_6614_mcmc`), `ai/Q2.../multi_star_mcmc.py` |
 | `selection.py` | AIC / BIC / Delta-IC, chi2-style log-likelihood | `ai/Q2.../multi_star_mcmc.py` (`aic_bic`), `ai/Q03.../run_voigt_fit.py` |
-| `quality.py` | Autocorrelation-time labels (Success / Mild / Severe), `N_eff` | `cross/final_catalog/csv_to_fits_with_metadata.py` label rule |
+| `quality.py` | Quality labels from `L / tau_DIB` (Success / Mild / Severe) and `N_eff` | paper Section "Quality Labels"; `cross/final_catalog/update_autocorr_neff.py` (`N_eff = 5000/tau`) |
 | `preprocess.py` | LAMOST MRS reading, cut, resample, normalise, save/read preprocessed FITS | `cross/src/preprocess.py` |
 | `specnorm.py` | Continuum normalisation and array helpers | `cross/src/specNormg.py` (verbatim copy) |
 | `plotting.py` | Spectrum + fit, per-epoch grid, corner plots, decomposition, tau bars | figure style of `ai/Q06.../plot_q6_3x2.py`, `ai/Q03.../gamma0.6/plot_fig9_*.py` |
