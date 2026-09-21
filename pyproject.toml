@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcmc-rvsd"
+version = "0.1.0"
+description = "MCMC-RVSD: disentangling multi-epoch single-lined binary spectra to measure diffuse interstellar bands"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+# authors: to be filled in once the accompanying paper is published
+keywords = ["astronomy", "spectroscopy", "diffuse interstellar bands", "MCMC", "binary stars", "LAMOST"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "emcee>=3.1",
+    "astropy>=5.3",
+    "matplotlib>=3.7",
+    "corner>=2.2",
+]
+
+[project.optional-dependencies]
+examples = ["jupyter>=1.0", "nbconvert>=7.0", "ipykernel>=6.0"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+mcmc-rvsd = "mcmc_rvsd.__main__:main"
+
+# Only src/ is packaged: the notebooks (examples/) and the FITS files (data/)
+# stay in the repository so that `pip install mcmc-rvsd` stays lightweight.
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["*.ipynb", "*.fits", "*.fits.gz", "*.npz", "*.png"]
